@@ -389,48 +389,32 @@
      BACKGROUND MUSIC — attempts autoplay, falls back to first interaction
      ------------------------------------------------------------------- */
   function initMusic() {
-    const audio = document.getElementById('bgMusic');
-    const toggle = document.getElementById('musicToggle');
-    if (!audio || !toggle) return; // fails silently if markup is missing
-    const icon = toggle.querySelector('.music-icon');
+  const audio = document.getElementById("bgMusic");
+  const toggle = document.getElementById("musicToggle");
 
-    audio.volume = 100;
+  if (!audio) return;
 
-    function setPlayingUI(isPlaying) {
-      icon.classList.toggle('playing', isPlaying);
-      icon.classList.toggle('paused', !isPlaying);
-      toggle.setAttribute('aria-label', isPlaying ? 'Pause music' : 'Play music');
-    }
+  audio.volume = 0.55;
 
-    function tryPlay() {
-      const playPromise = audio.play();
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => setPlayingUI(true))
-          .catch(() => {
-            // Autoplay blocked by the browser — arm it to start on first interaction
-            setPlayingUI(false);
-            const resume = () => {
-              audio.play().then(() => setPlayingUI(true)).catch(() => {});
-              document.removeEventListener('click', resume);
-              document.removeEventListener('touchstart', resume);
-            };
-            document.addEventListener('click', resume, { once: true });
-            document.addEventListener('touchstart', resume, { once: true });
-          });
-      }
-    }
+  function playMusic() {
+    audio.play().catch(() => {});
+  }
 
-    tryPlay();
+  // User ke pehle touch/click par music start hoga
+  document.addEventListener("click", playMusic, { once: true });
+  document.addEventListener("touchstart", playMusic, { once: true });
 
-    toggle.addEventListener('click', () => {
+  if (toggle) {
+    toggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+
       if (audio.paused) {
-        audio.play().then(() => setPlayingUI(true)).catch(() => {});
+        audio.play();
       } else {
         audio.pause();
-        setPlayingUI(false);
       }
     });
+  }
   }
 
   /* -------------------------------------------------------------------
