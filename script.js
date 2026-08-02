@@ -394,7 +394,7 @@
     if (!audio || !toggle) return; // fails silently if markup is missing
     const icon = toggle.querySelector('.music-icon');
 
-    audio.volume = 0.55;
+    audio.volume = 100;
 
     function setPlayingUI(isPlaying) {
       icon.classList.toggle('playing', isPlaying);
